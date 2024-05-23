@@ -6,9 +6,10 @@ const port = 3000;
 // Middleware for parsing JSON
 app.use(express.json());
 
-const db = require("./config/database");
+const db = require("./models");
+const sequelize = db.sequelize;
+const UserModel = db.User;
 
-const UserModel = require("./models/user");
 
 const initApp = async () => {
   console.log("Testing the database connection..");
@@ -18,14 +19,8 @@ const initApp = async () => {
    * You can use the .authenticate() function to test if the connection works.
    */
   try {
-      await db.authenticate();
+      await sequelize.authenticate();
       console.log("Connection has been established successfully.");
-
-      //syncronize the user model
-      // WARNING don't use sync {force: true} or sync {alter: true} in production
-      UserModel.sync({
-        alter: true,
-      });
       
       //Start the web server on the specified port.
       app.listen(port, () => {
