@@ -10,7 +10,6 @@ const db = require("./models");
 const sequelize = db.sequelize;
 const UserModel = db.User;
 
-
 const initApp = async () => {
   console.log("Testing the database connection..");
   
