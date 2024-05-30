@@ -2,7 +2,17 @@ const express = require('express');
 const router = express.Router();
 const { ExpenseReport: ExpenseReportModel } = require('../models');
 
-// Get all expense reports
+/**
+ * @swagger
+ * /expensereports:
+ *   get:
+ *     description: Get all expense reports
+ *     responses:
+ *       200:
+ *         description: Success
+ *       500:
+ *         description: Server Error
+ */
 router.get('/', async (req, res) => {
   try {
     const expenseReports = await ExpenseReportModel.findAll();
@@ -13,11 +23,30 @@ router.get('/', async (req, res) => {
   }
 });
 
-// Get a specific expense report
+/**
+ * @swagger
+ * /expensereports/{id}:
+ *   get:
+ *     description: Get an expense report by id
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: id of the expense report
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Success
+ *       404:
+ *         description: Expense report not found
+ *       500:
+ *         description: Server Error
+ */
 router.get('/:id', async (req, res) => {
   const { id } = req.params;
   try {
-    const expenseReport = await ExpenseReport.findByPk(id);
+    const expenseReport = await ExpenseReportModel.findByPk(id);
     if (!expenseReport) {
       return res.status(404).json({ message: 'Expense report not found' });
     }
@@ -28,11 +57,32 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-// Create a new expense report
+/**
+ * @swagger
+ * /expensereports:
+ *   post:
+ *     description: Create an expense report
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               description:
+ *                 type: string
+ *               status:
+ *                 type: string
+ *     responses:
+ *       201:
+ *         description: Created
+ *       500:
+ *         description: Server Error
+ */
 router.post('/', async (req, res) => {
-  const { title, amount } = req.body;
+  const { description, status } = req.body;
   try {
-    const expenseReport = await ExpenseReport.create({ title, amount });
+    const expenseReport = await ExpenseReportModel.create({ description, status });
     res.status(201).json(expenseReport);
   } catch (error) {
     console.error(error);
@@ -40,17 +90,47 @@ router.post('/', async (req, res) => {
   }
 });
 
-// Update an expense report
+/**
+ * @swagger
+ * /expensereports/{id}:
+ *   put:
+ *     description: Update an expense report
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: id of the expense report
+ *         schema:
+ *           type: integer
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               description:
+ *                 type: string
+ *               status:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Success
+ *       404:
+ *         description: Expense report not found
+ *       500:
+ *         description: Server Error
+ */
 router.put('/:id', async (req, res) => {
   const { id } = req.params;
-  const { title, amount } = req.body;
+  const { description, status } = req.body;
   try {
-    const expenseReport = await ExpenseReport.findByPk(id);
+    const expenseReport = await ExpenseReportModel.findByPk(id);
     if (!expenseReport) {
       return res.status(404).json({ message: 'Expense report not found' });
     }
-    expenseReport.title = title;
-    expenseReport.amount = amount;
+    expenseReport.description = description;
+    expenseReport.status = status;
     await expenseReport.save();
     res.json(expenseReport);
   } catch (error) {
@@ -59,11 +139,31 @@ router.put('/:id', async (req, res) => {
   }
 });
 
-// Delete an expense report
+// add swagger docs
+/**
+ * @swagger
+ * /expensereports/{id}:
+ *   delete:
+ *     description: Delete an expense report
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: id of the expense report
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Expense report deleted successfully
+ *       404:
+ *         description: Expense report not found
+ *       500:
+ *         description: Server Error
+ */
 router.delete('/:id', async (req, res) => {
   const { id } = req.params;
   try {
-    const expenseReport = await ExpenseReport.findByPk(id);
+    const expenseReport = await ExpenseReportModel.findByPk(id);
     if (!expenseReport) {
       return res.status(404).json({ message: 'Expense report not found' });
     }

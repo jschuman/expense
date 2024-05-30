@@ -2,7 +2,16 @@ const express = require('express');
 const router = express.Router();
 const { User: UserModel } = require('../models');
 
-// GET /users
+/**
+ * @swagger
+ * /users:
+ *   get:
+ *     description: Get all users
+ *     responses:
+ *       200:
+ *         description: Success
+ * 
+ */
 router.get("/", (req, res) => {
   UserModel.findAll()
   .then((users) => {
@@ -16,7 +25,23 @@ router.get("/", (req, res) => {
   });
 });
 
-// GET /users/:id
+/**
+ * @swagger
+ * /users/{id}:
+ *   get:
+ *     description: Get user by id
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: User id
+ *     responses:
+ *       200:
+ *         description: Success
+ * 
+ */
 router.get("/:id", (req, res) => {
   UserModel.findByPk(req.params.id)
   .then((user) => {
@@ -30,7 +55,29 @@ router.get("/:id", (req, res) => {
   });
 });
 
-// POST /users
+/**
+ * @swagger
+ * /users:
+ *   post:
+ *     description: Create a new user
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *               firstName:
+ *                 type: string
+ *               lastName:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Success
+ * 
+ */
 router.post("/", (req, res) => {
   
   //Call the create function on the User model, and pass the data that you receive.
@@ -52,8 +99,24 @@ router.post("/", (req, res) => {
   });
 });
 
-// PUT /users/:id
-router.put("/:id", (req, res) => {
+/** 
+ * @swagger
+ * /users/{id}:
+ *  put:
+ *    description: Update user by id
+ *    parameters:
+ *      - in: path
+ *        name: id
+ *        required: true
+ *        schema:
+ *          type: integer
+ *          description: User id
+ *    responses:
+ *      200:
+ *        description: Success
+ *  
+ */ 
+ router.put("/:id", (req, res) => {
   UserModel.update
   (
       {
@@ -74,7 +137,23 @@ router.put("/:id", (req, res) => {
   }) 
 });
 
-// DELETE /users/:id
+/** 
+ * @swagger
+ * /users/{id}:
+ *  delete:
+ *    description: Delete user by id
+ *    parameters:
+ *      - in: path
+ *        name: id
+ *        required: true
+ *        schema:
+ *          type: integer
+ *          description: User id
+ *    responses:
+ *      200:
+ *        description: Success
+ *  
+ */
 router.delete("/:id", (req, res) => {
   UserModel.destroy({
     where: {
@@ -88,7 +167,23 @@ router.delete("/:id", (req, res) => {
   })
 });
 
-// Handle the GET request to fetch the expense reports of a user.
+/** 
+ * @swagger
+ * /users/{id}/expenseReports:
+ *  get:
+ *    description: Get User with expense reports by user id
+ *    parameters:
+ *      - in: path
+ *        name: id
+ *        required: true
+ *        schema:
+ *          type: integer
+ *          description: User id
+ *    responses:
+ *      200:
+ *        description: Success
+ *  
+ */
 router.get("/:id/expenseReports", (req, res) => {
   UserModel.findByPk(req.params.id, {
       include: "ExpenseReports",

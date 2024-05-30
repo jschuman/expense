@@ -35,3 +35,7 @@ initApp();
 // import routes
 const routes = require("./routes");
 app.use('/', routes);
+
+// import swagger
+const swagger = require('./swagger');
+swagger(app);
