@@ -82,7 +82,7 @@ router.get('/:id', async (req, res) => {
 router.post('/', async (req, res) => {
   const { description, status } = req.body;
   try {
-    const expenseReport = await ExpenseReportModel.create({ description, status });
+    const expenseReport = await ExpenseReportModel.create({ description, status, statusUpdatedAt: new Date() });
     res.status(201).json(expenseReport);
   } catch (error) {
     console.error(error);
@@ -130,7 +130,12 @@ router.put('/:id', async (req, res) => {
       return res.status(404).json({ message: 'Expense report not found' });
     }
     expenseReport.description = description;
-    expenseReport.status = status;
+
+    const statusUpdated = expenseReport.status !== status;
+    if (statusUpdated) {
+      expenseReport.status = status;
+      expenseReport.statusUpdatedAt = new Date();
+    }
     await expenseReport.save();
     res.json(expenseReport);
   } catch (error) {

@@ -16,6 +16,10 @@ module.exports = {
         allowNull: false,
         type: Sequelize.STRING
       },
+      statusUpdatedAt: {
+        allowNull: false,
+        type: Sequelize.DATE
+      },
       userId: {
         type: Sequelize.INTEGER,
         onDelete: 'CASCADE',

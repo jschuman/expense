@@ -20,6 +20,7 @@ module.exports = (sequelize, DataTypes) => {
   ExpenseReport.init({
     description: DataTypes.STRING,
     status: DataTypes.STRING,
+    statusUpdatedAt: DataTypes.DATE,
     userId: DataTypes.INTEGER
   }, {
     sequelize,

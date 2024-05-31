@@ -7,6 +7,7 @@ module.exports = {
     await queryInterface.bulkInsert('ExpenseReports', [{
       description: 'Dinner with client',
       status: 'PENDING',
+      statusUpdatedAt: new Date(),
       userId: 1,
       createdAt: new Date(),
       updatedAt: new Date(),
