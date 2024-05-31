@@ -71,8 +71,6 @@ router.get('/:id', async (req, res) => {
  *             properties:
  *               description:
  *                 type: string
- *               status:
- *                 type: string
  *     responses:
  *       201:
  *         description: Created
@@ -82,7 +80,7 @@ router.get('/:id', async (req, res) => {
 router.post('/', async (req, res) => {
   const { description, status } = req.body;
   try {
-    const expenseReport = await ExpenseReportModel.create({ description, status, statusUpdatedAt: new Date() });
+    const expenseReport = await ExpenseReportModel.create({ description });
     res.status(201).json(expenseReport);
   } catch (error) {
     console.error(error);
@@ -113,6 +111,7 @@ router.post('/', async (req, res) => {
  *                 type: string
  *               status:
  *                 type: string
+ *                 required: false
  *     responses:
  *       200:
  *         description: Success
@@ -130,12 +129,8 @@ router.put('/:id', async (req, res) => {
       return res.status(404).json({ message: 'Expense report not found' });
     }
     expenseReport.description = description;
-
-    const statusUpdated = expenseReport.status !== status;
-    if (statusUpdated) {
-      expenseReport.status = status;
-      expenseReport.statusUpdatedAt = new Date();
-    }
+    expenseReport.status = status;
+    
     await expenseReport.save();
     res.json(expenseReport);
   } catch (error) {

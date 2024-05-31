@@ -25,6 +25,17 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'ExpenseReport',
+    hooks: {
+      beforeCreate: (expenseReport, options) => {
+        expenseReport.status = 'PENDING';
+        expenseReport.statusUpdatedAt = new Date();
+      },
+      beforeUpdate: (expenseReport, options) => {
+        if (expenseReport.status && expenseReport.status !== expenseReport._previousDataValues.status) {
+          expenseReport.statusUpdatedAt = new Date();
+        }
+      },
+    },
   });
   return ExpenseReport;
 };
