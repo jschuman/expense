@@ -5,7 +5,7 @@ module.exports = {
   async up (queryInterface, Sequelize) {
     // bulk insert an expense report
     await queryInterface.bulkInsert('ExpenseReports', [{
-      description: 'Dinner with client',
+      description: 'Travel to client site',
       status: 'PENDING',
       statusUpdatedAt: new Date(),
       userId: 1,

@@ -2,7 +2,7 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('ExpenseReports', {
+    await queryInterface.createTable('ExpenseReportItems', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -10,25 +10,20 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       description: {
-        type: Sequelize.STRING,
-        allowNull: false,
-      },
-      status: {
         allowNull: false,
         type: Sequelize.STRING
       },
-      statusUpdatedAt: {
+      incurredAt: {
         allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.DATEONLY
       },
-      userId: {
-        type: Sequelize.INTEGER,
-        onDelete: 'CASCADE',
-        references: {
-          model: 'Users',
-          key: 'id',
-          as: 'userId',
-        }
+      amount: {
+        type: Sequelize.DECIMAL(10, 2),
+        allowNull: false,
+      },
+      expenseReportId: {
+        allowNull: false,
+        type: Sequelize.INTEGER
       },
       createdAt: {
         allowNull: false,
@@ -41,6 +36,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('ExpenseReports');
+    await queryInterface.dropTable('ExpenseReportItems');
   }
 };

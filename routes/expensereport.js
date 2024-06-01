@@ -71,6 +71,8 @@ router.get('/:id', async (req, res) => {
  *             properties:
  *               description:
  *                 type: string
+ *               userId:
+ *                 type: integer
  *     responses:
  *       201:
  *         description: Created
@@ -78,9 +80,9 @@ router.get('/:id', async (req, res) => {
  *         description: Server Error
  */
 router.post('/', async (req, res) => {
-  const { description, status } = req.body;
+  const { description, userId } = req.body;
   try {
-    const expenseReport = await ExpenseReportModel.create({ description });
+    const expenseReport = await ExpenseReportModel.create({ description, userId });
     res.status(201).json(expenseReport);
   } catch (error) {
     console.error(error);

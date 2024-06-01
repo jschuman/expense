@@ -15,21 +15,35 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'userId',
         onDelete: 'CASCADE'
       })
+
+      this.hasMany(models.ExpenseReportItem, {
+        foreignKey: 'expenseReportId',
+      })
     }
   }
   ExpenseReport.init({
-    description: DataTypes.STRING,
-    status: DataTypes.STRING,
-    statusUpdatedAt: DataTypes.DATE,
-    userId: DataTypes.INTEGER
+    description: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    status: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      defaultValue: 'PENDING',
+    },
+    statusUpdatedAt: {
+      type: DataTypes.DATE,
+      allowNull: false,
+      defaultValue: new Date(),
+    },
+    userId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
   }, {
     sequelize,
     modelName: 'ExpenseReport',
     hooks: {
-      beforeCreate: (expenseReport, options) => {
-        expenseReport.status = 'PENDING';
-        expenseReport.statusUpdatedAt = new Date();
-      },
       beforeUpdate: (expenseReport, options) => {
         if (expenseReport.status && expenseReport.status !== expenseReport._previousDataValues.status) {
           expenseReport.statusUpdatedAt = new Date();
