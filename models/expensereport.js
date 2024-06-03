@@ -2,6 +2,9 @@
 const {
   Model
 } = require('sequelize');
+
+const statusHelper = require('../helpers/status');
+
 module.exports = (sequelize, DataTypes) => {
   class ExpenseReport extends Model {
 
@@ -20,30 +23,12 @@ module.exports = (sequelize, DataTypes) => {
       this.hasMany(models.ExpenseReportItem, {
         foreignKey: 'expenseReportId',
       })
+
+      this.hasMany(models.ExpenseReportStatusChange, {
+        foreignKey: 'expenseReportId',
+      })
     }
   }
-
-  ExpenseReport.STATUS_SUBMITTED = 'SUBMITTED';
-  ExpenseReport.STATUS_IN_PROGRESS = 'IN_PROGRESS';
-  ExpenseReport.STATUS_REJECTED = 'REJECTED';
-  ExpenseReport.STATUS_SCHEDULED_FOR_PAYMENT = 'SCHEDULED_FOR_PAYMENT';
-  ExpenseReport.STATUS_PAID = 'PAID';
-
-  ExpenseReport.VALID_STATUSES = [
-    ExpenseReport.STATUS_SUBMITTED,
-    ExpenseReport.STATUS_IN_PROGRESS,
-    ExpenseReport.STATUS_REJECTED,
-    ExpenseReport.STATUS_SCHEDULED_FOR_PAYMENT,
-    ExpenseReport.STATUS_PAID,
-  ];
-
-  ExpenseReport.ALLOWED_STATUS_TRANSITIONS = {
-    SUBMITTED: [ExpenseReport.STATUS_IN_PROGRESS, ExpenseReport.STATUS_REJECTED],
-    IN_PROGRESS: [ExpenseReport.STATUS_SCHEDULED_FOR_PAYMENT, ExpenseReport.STATUS_REJECTED],
-    SCHEDULED_FOR_PAYMENT: [ExpenseReport.STATUS_PAID],
-    PAID: [],
-    REJECTED: [ExpenseReport.STATUS_SUBMITTED],
-  };
 
   ExpenseReport.init({
     description: {
@@ -56,12 +41,12 @@ module.exports = (sequelize, DataTypes) => {
       defaultValue: 'SUBMITTED',
       validate: {
         isIn: {
-          args: [ExpenseReport.VALID_STATUSES],
-          msg: `Status must be one of: ${ExpenseReport.VALID_STATUSES.join(', ')}`,
+          args: [statusHelper.VALID_STATUSES],
+          msg: `Status must be one of: ${statusHelper.VALID_STATUSES.join(', ')}`,
         },
         isValidTransition(value) {
           if (this._previousDataValues.status) {
-            const allowedTransitions = ExpenseReport.ALLOWED_STATUS_TRANSITIONS[this._previousDataValues.status];
+            const allowedTransitions = statusHelper.ALLOWED_STATUS_TRANSITIONS[this._previousDataValues.status];
             if (!allowedTransitions.includes(value)) {
               throw new Error(`Cannot transition from ${this._previousDataValues.status} to ${value}`);
             }
@@ -78,6 +63,26 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
+    isReimbursableFromClient: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false,
+    },
+    clientName: {
+      type: DataTypes.STRING,
+      allowNull: true,
+      validate: {
+        isClientNameRequired(value) {
+          if (this.isReimbursableFromClient && !value) {
+            throw new Error('clientName is required when isReimbursableFromClient is true');
+          }
+        },
+      },
+    },
+    adminNotes: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
   }, {
     sequelize,
     modelName: 'ExpenseReport',
@@ -87,6 +92,22 @@ module.exports = (sequelize, DataTypes) => {
           expenseReport.statusUpdatedAt = new Date();
         }
       },
+      afterCreate: async (expenseReport, options) => {
+        await sequelize.models.ExpenseReportStatusChange.create({
+          expenseReportId: expenseReport.id,
+          status: expenseReport.status,
+          changedByUserId: expenseReport.userId,
+        });
+      },
+      afterUpdate: async (expenseReport, options) => {
+        if (expenseReport.status && expenseReport.status !== expenseReport._previousDataValues.status) {
+          await sequelize.models.ExpenseReportStatusChange.create({
+            expenseReportId: expenseReport.id,
+            status: expenseReport.status,
+            changedByUserId: expenseReport.userId,
+          });
+        }
+      }
     },
   });
   return ExpenseReport;

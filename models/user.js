@@ -14,6 +14,10 @@ module.exports = (sequelize, DataTypes) => {
       this.hasMany(models.ExpenseReport, {
         foreignKey: 'userId',
       })
+
+      this.hasMany(models.ExpenseReportStatusChange, {
+        foreignKey: 'changedByUserId',
+      })
     }
   }
   User.init({

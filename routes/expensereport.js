@@ -73,6 +73,12 @@ router.get('/:id', async (req, res) => {
  *                 type: string
  *               userId:
  *                 type: integer
+ *               isReimbursableFromClient:
+ *                 type: boolean
+ *               clientName:
+ *                 type: string
+ *               adminNotes:
+ *                 type: string 
  *     responses:
  *       201:
  *         description: Created
@@ -80,9 +86,9 @@ router.get('/:id', async (req, res) => {
  *         description: Server Error
  */
 router.post('/', async (req, res) => {
-  const { description, userId } = req.body;
+  const { description, userId, isReimbursableFromClient, clientName, adminNotes } = req.body;
   try {
-    const expenseReport = await ExpenseReportModel.create({ description, userId });
+    const expenseReport = await ExpenseReportModel.create({ description, userId, isReimbursableFromClient, clientName, adminNotes });
     res.status(201).json(expenseReport);
   } catch (error) {
     console.error(error);
@@ -113,7 +119,12 @@ router.post('/', async (req, res) => {
  *                 type: string
  *               status:
  *                 type: string
- *                 required: false
+ *               isReimbursableFromClient:
+ *                 type: boolean
+ *               clientName:
+ *                 type: string
+ *               adminNotes:
+ *                 type: string
  *     responses:
  *       200:
  *         description: Success
@@ -124,7 +135,7 @@ router.post('/', async (req, res) => {
  */
 router.put('/:id', async (req, res) => {
   const { id } = req.params;
-  const { description, status } = req.body;
+  const { description, status, isReimbursableFromClient, clientName, adminNotes } = req.body;
   try {
     const expenseReport = await ExpenseReportModel.findByPk(id);
     if (!expenseReport) {
@@ -132,6 +143,9 @@ router.put('/:id', async (req, res) => {
     }
     expenseReport.description = description;
     expenseReport.status = status;
+    expenseReport.isReimbursableFromClient = isReimbursableFromClient;
+    expenseReport.clientName = clientName;
+    expenseReport.adminNotes = adminNotes;
     
     await expenseReport.save();
     res.json(expenseReport);
@@ -210,7 +224,6 @@ router.get("/:id/expenseReportItems", (req, res) => {
   });
 });
 
-// add patch route
 /**
  * @swagger
  * /expensereports/{id}:
@@ -232,6 +245,13 @@ router.get("/:id/expenseReportItems", (req, res) => {
  *             properties:
  *               status:
  *                 type: string
+ *                 enum: [SUBMITTED, IN_PROGRESS, REJECTED, SCHEDULED_FOR_PAYMENT, PAID]
+ *               isReimbursableFromClient:
+ *                 type: boolean
+ *               clientName:
+ *                 type: string
+ *               adminNotes:
+ *                 type: string
  *     responses:
  *       200:
  *         description: Success
@@ -242,13 +262,25 @@ router.get("/:id/expenseReportItems", (req, res) => {
  */
 router.patch('/:id', async (req, res) => {
   const { id } = req.params;
-  const { status } = req.body;
+  const { status, isReimbursableFromClient, clientName, adminNotes } = req.body;
   try {
     const expenseReport = await ExpenseReportModel.findByPk(id);
     if (!expenseReport) {
       return res.status(404).json({ message: 'Expense report not found' });
     }
-    expenseReport.status = status;
+    if (status) {
+      expenseReport.status = status;
+    }
+    if (isReimbursableFromClient) {
+      expenseReport.isReimbursableFromClient = isReimbursableFromClient;
+    }
+    if (clientName) {
+      expenseReport.clientName = clientName;
+    }
+    if (adminNotes) {
+      expenseReport.adminNotes = adminNotes;
+    }
+
     await expenseReport.save();
     res.json(expenseReport);
   } catch (error) {
