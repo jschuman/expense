@@ -2,6 +2,9 @@
 const {
   Model
 } = require('sequelize');
+
+const roleHelper = require('../helpers/role');
+
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {
     /**
@@ -36,7 +39,18 @@ module.exports = (sequelize, DataTypes) => {
     lastName: {
       type: DataTypes.STRING,
       allowNull: false,
-    }
+    },
+    role: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        isIn: {
+          args: [roleHelper.VALID_ROLES],
+          msg: `Role must be one of: ${roleHelper.VALID_ROLES.join(', ')}`,
+        },
+      },
+      defaultValue: roleHelper.USER,
+    },
     
   }, {
     sequelize,

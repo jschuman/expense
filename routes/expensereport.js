@@ -155,7 +155,6 @@ router.put('/:id', async (req, res) => {
   }
 });
 
-// add swagger docs
 /**
  * @swagger
  * /expensereports/{id}:

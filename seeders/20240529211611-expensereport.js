@@ -10,7 +10,7 @@ module.exports = {
       description: 'Travel to client site',
       status: 'SUBMITTED',
       statusUpdatedAt: new Date(),
-      userId: 1,
+      userId: 2,
       createdAt: new Date(),
       updatedAt: new Date(),
     }],

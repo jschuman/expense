@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { User: UserModel } = require('../models');
+const role = require('../helpers/role');
 
 /**
  * @swagger
@@ -73,6 +74,8 @@ router.get("/:id", (req, res) => {
  *                 type: string
  *               lastName:
  *                 type: string
+ *               role:
+ *                 type: string
  *     responses:
  *       200:
  *         description: Success
@@ -85,6 +88,7 @@ router.post("/", (req, res) => {
       email: req.body.email,
       firstName: req.body.firstName,
       lastName: req.body.lastName,
+      role: req.body.role,
   })
   .then((result) => {
       return res.json({
@@ -111,10 +115,28 @@ router.post("/", (req, res) => {
  *        schema:
  *          type: integer
  *          description: User id
+ *    requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *               firstName:
+ *                 type: string
+ *               lastName:
+ *                 type: string
+ *               role:
+ *                 type: string
  *    responses:
  *      200:
  *        description: Success
- *  
+ *      404: 
+ *        description: Expense report not found
+ *      500:
+ *        description: Server Error
  */ 
  router.put("/:id", (req, res) => {
   UserModel.update
@@ -123,6 +145,7 @@ router.post("/", (req, res) => {
           email: req.body.email,
           firstName: req.body.firstName,
           lastName: req.body.lastName,
+          role: req.body.role,
       },
       {
           where: {
