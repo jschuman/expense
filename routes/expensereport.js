@@ -177,4 +177,37 @@ router.delete('/:id', async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /expensereports/{id}/expenseReportItems:
+ *   get:
+ *     description: Get expense report items by expense report id
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: id of the expense report
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Success
+ *       500:
+ *         description: Server Error
+ */
+router.get("/:id/expenseReportItems", (req, res) => {
+  ExpenseReportModel.findByPk(req.params.id, {
+      include: "ExpenseReportItems",
+  })
+  .then((user) => {
+      return res.json(user);
+  })
+  .catch((error) => {
+      console.log(error);
+      return res.json({
+          message: "Unable to fetch the record!",
+      });
+  });
+});
+
 module.exports = router;
