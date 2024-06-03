@@ -6,7 +6,7 @@ module.exports = {
     // bulk insert an expense report
     await queryInterface.bulkInsert('ExpenseReports', [{
       description: 'Travel to client site',
-      status: 'PENDING',
+      status: 'SUBMITTED',
       statusUpdatedAt: new Date(),
       userId: 1,
       createdAt: new Date(),

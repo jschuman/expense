@@ -210,4 +210,51 @@ router.get("/:id/expenseReportItems", (req, res) => {
   });
 });
 
+// add patch route
+/**
+ * @swagger
+ * /expensereports/{id}:
+ *   patch:
+ *     description: Update an expense report
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: id of the expense report
+ *         schema:
+ *           type: integer
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               status:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Success
+ *       404:
+ *         description: Expense report not found
+ *       500:
+ *         description: Server Error
+ */
+router.patch('/:id', async (req, res) => {
+  const { id } = req.params;
+  const { status } = req.body;
+  try {
+    const expenseReport = await ExpenseReportModel.findByPk(id);
+    if (!expenseReport) {
+      return res.status(404).json({ message: 'Expense report not found' });
+    }
+    expenseReport.status = status;
+    await expenseReport.save();
+    res.json(expenseReport);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server Error' });
+  }
+});
+
 module.exports = router;
