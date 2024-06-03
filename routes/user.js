@@ -112,9 +112,9 @@ router.post("/", (req, res) => {
  *      - in: path
  *        name: id
  *        required: true
+ *        description: id of the user
  *        schema:
  *          type: integer
- *          description: User id
  *    requestBody:
  *       required: true
  *       content:
@@ -157,7 +157,11 @@ router.post("/", (req, res) => {
       return res.json({
           message: "Record updated successfully!",
       });
-  }) 
+  })
+  .catch((error) => {
+    console.error(error);
+    res.status(500).json({ message: 'Server Error' });
+  })
 });
 
 /** 
@@ -187,6 +191,10 @@ router.delete("/:id", (req, res) => {
       return res.json({
           message: "Record deleted successfully!",
       });
+  })
+  .catch((error) => {
+    console.error(error);
+    res.status(500).json({ message: 'Server Error' });
   })
 });
 
