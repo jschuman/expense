@@ -134,7 +134,7 @@ router.post("/", (req, res) => {
  *      200:
  *        description: Success
  *      404: 
- *        description: Expense report not found
+ *        description: user not found
  *      500:
  *        description: Server Error
  */ 
@@ -229,5 +229,66 @@ router.get("/:id/expenseReports", (req, res) => {
       });
   });
 });
+
+/** 
+ * @swagger
+ * /users/{id}:
+ *  patch:
+ *    description: Update user by id
+ *    parameters:
+ *      - in: path
+ *        name: id
+ *        required: true
+ *        description: id of the user
+ *        schema:
+ *          type: integer
+ *    requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *               firstName:
+ *                 type: string
+ *               lastName:
+ *                 type: string
+ *               role:
+ *                 type: string
+ *    responses:
+ *      200:
+ *        description: Success
+ *      404: 
+ *        description: user not found
+ *      500:
+ *        description: Server Error
+ */
+router.patch("/:id", (req, res) => {
+  UserModel.update
+  (
+      {
+          email: req.body.email,
+          firstName: req.body.firstName,
+          lastName: req.body.lastName,
+          role: req.body.role,
+      },
+      {
+          where: {
+              id: req.params.id,
+          },
+      }
+  ) 
+  .then((result) => {
+      return res.json({
+          message: "Record updated successfully!",
+      });
+  })
+  .catch((error) => {
+    console.error(error);
+    res.status(500).json({ message: 'Server Error' });
+  })
+});    
 
 module.exports = router;
