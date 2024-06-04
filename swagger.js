@@ -8,6 +8,23 @@ const options = {
       title: 'Express API with Swagger',
       version: '1.0.0',
     },
+    components: {
+      securitySchemes: {
+        OAuth2: {
+          type: 'oauth2',
+          flows: {
+            implicit: {
+              authorizationUrl: 'https://accounts.google.com/o/oauth2/v2/auth',
+              scopes: {
+                'openid': 'OpenID Connect scope',
+                'profile': 'Access to your profile',
+                'email': 'Access to your email'
+              }
+            }
+          }
+        }
+      }
+    }
   },
   apis: ['./routes/*.js'], // files containing annotations as above
 };

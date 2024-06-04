@@ -1,19 +1,21 @@
 const express = require('express');
 const router = express.Router();
 const { User: UserModel } = require('../models');
-const role = require('../helpers/role');
+const { ensureAuthenticated } = require('../helpers/auth');
 
 /**
  * @swagger
  * /users:
  *   get:
  *     description: Get all users
+ *     security:
+ *       - OAuth2: ['openid', 'profile', 'email']
  *     responses:
  *       200:
  *         description: Success
  * 
  */
-router.get("/", (req, res) => {
+router.get("/", ensureAuthenticated, (req, res) => {
   UserModel.findAll()
   .then((users) => {
       return res.json(users);

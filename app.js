@@ -11,9 +11,6 @@ const port = 3000;
 // Middleware for parsing JSON
 app.use(express.json());
 
-// use sessions
-app.use(session({ secret: process.env.SESSION_SECRET, resave: false, saveUninitialized: false }));
-
 passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
@@ -33,15 +30,24 @@ passport.use(new GoogleStrategy({
     }
 ));
 
+// use sessions
+app.use(session({ 
+    secret: process.env.SESSION_SECRET, 
+    resave: false, 
+    saveUninitialized: false 
+}));
+
 app.use(passport.initialize());
+app.use(passport.session());
 
 passport.serializeUser(function(user, done) {
     done(null, user.id);
 });
   
 passport.deserializeUser(function(id, done) {
-    UserModel.findById(id, function(err, user) {
-        done(err, user);
+    UserModel.findByPk(id)
+    .then((user) => {
+        done(null, user);
     });
 });
 
