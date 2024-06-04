@@ -51,6 +51,10 @@ module.exports = (sequelize, DataTypes) => {
       },
       defaultValue: roleHelper.USER,
     },
+    googleId: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    }
     
   }, {
     sequelize,

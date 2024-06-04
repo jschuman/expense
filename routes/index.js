@@ -1,15 +1,4 @@
-// const express = require('express');
-// const router = express.Router();
-
-// // import user routes and use
-// const userRoutes = require("./user");
-// router.use('/users', userRoutes);
-
-// const expenseReportRoutes = require("./expensereport");
-// router.use('/expensereports', expenseReportRoutes);
-
-// module.exports = router;
-
+// Initialize all routes in the routes folder
 const fs = require('fs');
 const path = require('path');
 const basename = path.basename(__filename);
@@ -30,7 +19,11 @@ fs
   })
   .forEach(file => {
     const routes = require(path.join(__dirname, file))
-    const routeName = inflection.pluralize(file.split('.')[0]);
+    let routeName = file.split('.')[0];
+
+    if (routeName.endsWith('model')) {
+      routeName = inflection.pluralize(routeName.substring(0, routeName.length - 5));
+    }
     router.use(`/${routeName}`, routes);
   });
 
