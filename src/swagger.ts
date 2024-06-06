@@ -27,11 +27,11 @@ const options = {
       }
     }
   },
-  apis: ['./src/routes/*.js'], // files containing annotations as above
+  apis: ['./src/routes/*.ts'], // files containing annotations as above
 };
 
 const specs: object = swaggerJsDoc(options);
 
-module.exports = (app: Application) => {
+export default function swagger(app: Application): any {
   app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
 };

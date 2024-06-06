@@ -1,15 +1,16 @@
 // Initialize all routes in the routes folder
-const fs = require('fs');
-const path = require('path');
-const basename = path.basename(__filename);
-const express = require('express');
-const inflection = require('inflection');
+import fs from "fs";
+import path from 'path';
+import { pluralize } from 'inflection';
+import express, { Router } from 'express';
 
-const router = express.Router();
+const basename: string = path.basename(__filename);
+
+const router: Router = express.Router();
 
 fs
   .readdirSync(__dirname)
-  .filter(file => {
+  .filter((file: string) => {
     return (
       file.indexOf('.') !== 0 &&
       file !== basename &&
@@ -17,12 +18,12 @@ fs
       file.indexOf('.test.js') === -1
     );
   })
-  .forEach(file => {
+  .forEach((file: string) => {
     const routes = require(path.join(__dirname, file))
-    let routeName = file.split('.')[0];
+    let routeName: string = file.split('.')[0];
 
     if (routeName.endsWith('model')) {
-      routeName = inflection.pluralize(routeName.substring(0, routeName.length - 5));
+      routeName = pluralize(routeName.substring(0, routeName.length - 5));
     }
     router.use(`/${routeName}`, routes);
   });

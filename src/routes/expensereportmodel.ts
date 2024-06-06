@@ -1,6 +1,7 @@
-const express = require('express');
-const router = express.Router();
+import express, { Router, Request, Response } from 'express';
+
 const { ExpenseReport: ExpenseReportModel } = require('../models');
+const router: Router = express.Router();
 
 /**
  * @swagger
@@ -13,11 +14,11 @@ const { ExpenseReport: ExpenseReportModel } = require('../models');
  *       500:
  *         description: Server Error
  */
-router.get('/', async (req, res) => {
+router.get('/', async (req: Request, res: Response) => {
   try {
-    const expenseReports = await ExpenseReportModel.findAll();
+    const expenseReports: any[] = await ExpenseReportModel.findAll();
     res.json(expenseReports);
-  } catch (error) {
+  } catch (error: any) {
     console.error(error);
     res.status(500).json({ message: 'Server Error' });
   }
@@ -43,15 +44,15 @@ router.get('/', async (req, res) => {
  *       500:
  *         description: Server Error
  */
-router.get('/:id', async (req, res) => {
+router.get('/:id', async (req: Request, res: Response) => {
   const { id } = req.params;
   try {
-    const expenseReport = await ExpenseReportModel.findByPk(id);
+    const expenseReport: any = await ExpenseReportModel.findByPk(id);
     if (!expenseReport) {
       return res.status(404).json({ message: 'Expense report not found' });
     }
     res.json(expenseReport);
-  } catch (error) {
+  } catch (error: any) {
     console.error(error);
     res.status(500).json({ message: 'Server Error' });
   }
@@ -85,12 +86,12 @@ router.get('/:id', async (req, res) => {
  *       500:
  *         description: Server Error
  */
-router.post('/', async (req, res) => {
+router.post('/', async (req: Request, res: Response) => {
   const { description, userId, isReimbursableFromClient, clientName, adminNotes } = req.body;
   try {
-    const expenseReport = await ExpenseReportModel.create({ description, userId, isReimbursableFromClient, clientName, adminNotes });
+    const expenseReport: any = await ExpenseReportModel.create({ description, userId, isReimbursableFromClient, clientName, adminNotes });
     res.status(201).json(expenseReport);
-  } catch (error) {
+  } catch (error: any) {
     console.error(error);
     res.status(500).json({ message: 'Server Error' });
   }
@@ -133,11 +134,11 @@ router.post('/', async (req, res) => {
  *       500:
  *         description: Server Error
  */
-router.put('/:id', async (req, res) => {
+router.put('/:id', async (req: Request, res: Response) => {
   const { id } = req.params;
   const { description, status, isReimbursableFromClient, clientName, adminNotes } = req.body;
   try {
-    const expenseReport = await ExpenseReportModel.findByPk(id);
+    const expenseReport: any = await ExpenseReportModel.findByPk(id);
     if (!expenseReport) {
       return res.status(404).json({ message: 'Expense report not found' });
     }
@@ -149,7 +150,7 @@ router.put('/:id', async (req, res) => {
     
     await expenseReport.save();
     res.json(expenseReport);
-  } catch (error) {
+  } catch (error: any) {
     console.error(error);
     res.status(500).json({ message: 'Server Error' });
   }
@@ -175,16 +176,16 @@ router.put('/:id', async (req, res) => {
  *       500:
  *         description: Server Error
  */
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', async (req: Request, res: Response) => {
   const { id } = req.params;
   try {
-    const expenseReport = await ExpenseReportModel.findByPk(id);
+    const expenseReport: any = await ExpenseReportModel.findByPk(id);
     if (!expenseReport) {
       return res.status(404).json({ message: 'Expense report not found' });
     }
     await expenseReport.destroy();
     res.json({ message: 'Expense report deleted successfully' });
-  } catch (error) {
+  } catch (error: any) {
     console.error(error);
     res.status(500).json({ message: 'Server Error' });
   }
@@ -208,14 +209,14 @@ router.delete('/:id', async (req, res) => {
  *       500:
  *         description: Server Error
  */
-router.get("/:id/expenseReportItems", (req, res) => {
+router.get("/:id/expenseReportItems", (req: Request, res: Response) => {
   ExpenseReportModel.findByPk(req.params.id, {
       include: "ExpenseReportItems",
   })
-  .then((user) => {
-      return res.json(user);
+  .then((expenseReport: any) => {
+      return res.json(expenseReport);
   })
-  .catch((error) => {
+  .catch((error: any) => {
       console.log(error);
       return res.json({
           message: "Unable to fetch the record!",
@@ -259,11 +260,11 @@ router.get("/:id/expenseReportItems", (req, res) => {
  *       500:
  *         description: Server Error
  */
-router.patch('/:id', async (req, res) => {
+router.patch('/:id', async (req: Request, res: Response) => {
   const { id } = req.params;
   const { status, isReimbursableFromClient, clientName, adminNotes } = req.body;
   try {
-    const expenseReport = await ExpenseReportModel.findByPk(id);
+    const expenseReport: any = await ExpenseReportModel.findByPk(id);
     if (!expenseReport) {
       return res.status(404).json({ message: 'Expense report not found' });
     }
@@ -282,7 +283,7 @@ router.patch('/:id', async (req, res) => {
 
     await expenseReport.save();
     res.json(expenseReport);
-  } catch (error) {
+  } catch (error: any) {
     console.error(error);
     res.status(500).json({ message: 'Server Error' });
   }

@@ -1,7 +1,8 @@
-const express = require('express');
-const router = express.Router();
+import express, { Router, Request, Response } from 'express';
+import ensureAuthenticated from '../helpers/auth';
+
 const { User: UserModel } = require('../models');
-const { ensureAuthenticated } = require('../helpers/auth');
+const router: Router = express.Router();
 
 /**
  * @swagger
@@ -15,12 +16,12 @@ const { ensureAuthenticated } = require('../helpers/auth');
  *         description: Success
  * 
  */
-router.get("/", ensureAuthenticated, (req, res) => {
+router.get("/", ensureAuthenticated, (req: Request, res: Response) => {
   UserModel.findAll()
-  .then((users) => {
+  .then((users: any) => {
       return res.json(users);
   })
-  .catch((error) => {
+  .catch((error: any) => {
       console.log(error);
       return res.json({
           message: "Unable to fetch records!",
@@ -45,12 +46,12 @@ router.get("/", ensureAuthenticated, (req, res) => {
  *         description: Success
  * 
  */
-router.get("/:id", (req, res) => {
+router.get("/:id", (req: Request, res: Response) => {
   UserModel.findByPk(req.params.id)
-  .then((user) => {
+  .then((user: any) => {
       return res.json(user);
   })
-  .catch((error) => {
+  .catch((error: any) => {
       console.log(error);
       return res.json({
           message: "Unable to fetch the record!",
@@ -83,7 +84,7 @@ router.get("/:id", (req, res) => {
  *         description: Success
  * 
  */
-router.post("/", (req, res) => {
+router.post("/", (req: Request, res: Response) => {
   
   //Call the create function on the User model, and pass the data that you receive.
   UserModel.create({
@@ -92,12 +93,12 @@ router.post("/", (req, res) => {
       lastName: req.body.lastName,
       role: req.body.role,
   })
-  .then((result) => {
+  .then((result: any) => {
       return res.json({
           message: "Record created successfully!",
       });
   })
-  .catch((error) => {
+  .catch((error: any) => {
       console.log(error);
       return res.json({
           message: "Unable to create a record!",
@@ -140,7 +141,7 @@ router.post("/", (req, res) => {
  *      500:
  *        description: Server Error
  */ 
- router.put("/:id", (req, res) => {
+ router.put("/:id", (req: Request, res: Response) => {
   UserModel.update
   (
       {
@@ -155,12 +156,12 @@ router.post("/", (req, res) => {
           },
       }
   ) 
-  .then((result) => {
+  .then((result: any) => {
       return res.json({
           message: "Record updated successfully!",
       });
   })
-  .catch((error) => {
+  .catch((error: any) => {
     console.error(error);
     res.status(500).json({ message: 'Server Error' });
   })
@@ -183,18 +184,18 @@ router.post("/", (req, res) => {
  *        description: Success
  *  
  */
-router.delete("/:id", (req, res) => {
+router.delete("/:id", (req: Request, res: Response) => {
   UserModel.destroy({
     where: {
         id: req.params.id,
     },
   })
-  .then((result) => {
+  .then((result: any) => {
       return res.json({
           message: "Record deleted successfully!",
       });
   })
-  .catch((error) => {
+  .catch((error: any) => {
     console.error(error);
     res.status(500).json({ message: 'Server Error' });
   })
@@ -217,14 +218,14 @@ router.delete("/:id", (req, res) => {
  *        description: Success
  *  
  */
-router.get("/:id/expenseReports", (req, res) => {
+router.get("/:id/expenseReports", (req: Request, res: Response) => {
   UserModel.findByPk(req.params.id, {
       include: "ExpenseReports",
   })
-  .then((user) => {
+  .then((user: any) => {
       return res.json(user);
   })
-  .catch((error) => {
+  .catch((error: any) => {
       console.log(error);
       return res.json({
           message: "Unable to fetch the record!",
@@ -267,7 +268,7 @@ router.get("/:id/expenseReports", (req, res) => {
  *      500:
  *        description: Server Error
  */
-router.patch("/:id", (req, res) => {
+router.patch("/:id", (req: Request, res: Response) => {
   UserModel.update
   (
       {
@@ -282,12 +283,12 @@ router.patch("/:id", (req, res) => {
           },
       }
   ) 
-  .then((result) => {
+  .then((result: any) => {
       return res.json({
           message: "Record updated successfully!",
       });
   })
-  .catch((error) => {
+  .catch((error: any) => {
     console.error(error);
     res.status(500).json({ message: 'Server Error' });
   })

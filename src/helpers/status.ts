@@ -21,7 +21,7 @@ const ALLOWED_STATUS_TRANSITIONS: { [key: string]: string[] } = {
   REJECTED: [SUBMITTED],
 };
 
-module.exports = {
+export {
   SUBMITTED,
   IN_PROGRESS,
   REJECTED,

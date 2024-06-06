@@ -1,5 +1,6 @@
-const express = require('express');
-const router = express.Router();
+import express, { Router, Request, Response } from 'express';
+
+const router: Router = express.Router();
 const { ExpenseReportItem: ExpenseReportItemModel } = require('../models');
 
 /**
@@ -22,15 +23,15 @@ const { ExpenseReportItem: ExpenseReportItemModel } = require('../models');
  *       500:
  *         description: Server Error
  */
-router.get('/:id', async (req, res) => {
+router.get('/:id', async (req: Request, res: Response) => {
   const { id } = req.params;
   try {
-    const expenseReportItem = await ExpenseReportItemModel.findByPk(id);
+    const expenseReportItem: any = await ExpenseReportItemModel.findByPk(id);
     if (!expenseReportItem) {
       return res.status(404).json({ message: 'Expense report item not found' });
     }
     res.json(expenseReportItem);
-  } catch (error) {
+  } catch (error: any) {
     console.error(error);
     res.status(500).json({ message: 'Server Error' });
   }
@@ -62,16 +63,16 @@ router.get('/:id', async (req, res) => {
  *       500:
  *         description: Server Error
  */
-router.post('/', async (req, res) => {
+router.post('/', async (req: Request, res: Response) => {
   const { description, incurredAt, amount, expenseReportId } = req.body;
   try {
-    const expenseReportItem = await ExpenseReportItemModel.create(
+    const expenseReportItem: any = await ExpenseReportItemModel.create(
       { description, 
         incurredAt,
         amount,
         expenseReportId });
     res.status(201).json(expenseReportItem);
-  } catch (error) {
+  } catch (error: any) {
     console.error(error);
     res.status(500).json({ message: 'Server Error' });
   }
@@ -110,11 +111,11 @@ router.post('/', async (req, res) => {
  *       500:
  *         description: Server Error
  */
-router.put('/:id', async (req, res) => {
+router.put('/:id', async (req: Request, res: Response) => {
   const { id } = req.params;
   const { description, incurredAt, amount } = req.body;
   try {
-    const expenseReportItem = await ExpenseReportItemModel.findByPk(id);
+    const expenseReportItem: any = await ExpenseReportItemModel.findByPk(id);
     if (!expenseReportItem) {
       return res.status(404).json({ message: 'Expense report Item not found' });
     }
@@ -124,7 +125,7 @@ router.put('/:id', async (req, res) => {
 
     await expenseReportItem.save();
     res.json(expenseReportItem);
-  } catch (error) {
+  } catch (error: any) {
     console.error(error);
     res.status(500).json({ message: 'Server Error' });
   }
@@ -151,16 +152,16 @@ router.put('/:id', async (req, res) => {
  *       500:
  *         description: Server Error
  */
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', async (req: Request, res: Response) => {
   const { id } = req.params;
   try {
-    const expenseReportItem = await ExpenseReportItemModel.findByPk(id);
+    const expenseReportItem: any = await ExpenseReportItemModel.findByPk(id);
     if (!expenseReportItem) {
       return res.status(404).json({ message: 'Expense report item not found' });
     }
     await expenseReportItem.destroy();
     res.json({ message: 'Expense report item deleted successfully' });
-  } catch (error) {
+  } catch (error: any) {
     console.error(error);
     res.status(500).json({ message: 'Server Error' });
   }

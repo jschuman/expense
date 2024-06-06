@@ -9,7 +9,7 @@ const VALID_ROLES: string[] = [
   SUBMITTER
 ];
 
-module.exports = {
+export {
   ADMIN,
   USER,
   SUBMITTER,

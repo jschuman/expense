@@ -1,5 +1,5 @@
 // Set up Express server
-import express, { Router } from 'express';
+import express from 'express';
 import passport, { Profile } from 'passport';
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
 import session from 'express-session';
@@ -84,4 +84,5 @@ const routes = require("./routes");
 app.use('/', routes);
 
 // import swagger
-const swagger = require('./swagger');swagger(app);
+import swagger from './swagger';
+swagger(app);

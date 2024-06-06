@@ -39,6 +39,4 @@ function ensureAuthenticated(req: Request, res: Response, next: NextFunction): v
   }
 }
 
-module.exports = {
-  ensureAuthenticated
-};
+export default ensureAuthenticated;
