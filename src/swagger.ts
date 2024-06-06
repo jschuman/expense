@@ -1,5 +1,6 @@
-const swaggerJsDoc = require('swagger-jsdoc');
-const swaggerUi = require('swagger-ui-express');
+import swaggerJsDoc from 'swagger-jsdoc';
+import swaggerUi from 'swagger-ui-express';
+import { Application } from 'express';
 
 const options = {
   definition: {
@@ -29,8 +30,8 @@ const options = {
   apis: ['./src/routes/*.js'], // files containing annotations as above
 };
 
-const specs = swaggerJsDoc(options);
+const specs: object = swaggerJsDoc(options);
 
-module.exports = (app) => {
+module.exports = (app: Application) => {
   app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
 };
