@@ -8,7 +8,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 const app: express.Application = express();
-const port: number = parseInt(process.env.port || '3000');
+const port: number = parseInt(process.env.PORT || '3000');
 
 // Middleware for parsing JSON
 app.use(express.json());
@@ -16,7 +16,7 @@ app.use(express.json());
 passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID ?? '',
     clientSecret: process.env.GOOGLE_CLIENT_SECRET ?? '',
-    callbackURL: "http://localhost:3000/auth/google/callback"
+    callbackURL: "http://localhost:3001/auth/google/callback"
 },
     async function (accessToken: string, refreshToken: string, profile: Profile, cb: Function) {        
         const [user, created] = await UserModel.findOrCreate({ 
