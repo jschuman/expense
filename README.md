@@ -1,3 +1,3 @@
-# expense
+# expense-server
 
-Uses express and Sequelize
+Uses express, passport with google oauth and Sequelize
